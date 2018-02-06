@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Nadya Tsivina](https://up.htmlacademy.ru/nodejs/1/user/58774).
-* Наставник: [Вадим Чистохвалов](https://htmlacademy.ru/profile/id519873).
+* Наставник: [Сергей Вохмянин](https://htmlacademy.ru/profile/id530823).
 
 ---
 

@@ -1,8 +1,10 @@
 const args = process.argv.slice(2);
-if (process.argv.length > 2) {
+if (args.length > 0) {
    switch (args[0]) {
       case `--help`:
-        console.log(`печатает этот текст`);
+        console.log(`Доступные команды:
+--help    — печатает этот текст;
+--version — печатает версию приложения;`);
         break;
       case `--version`:
         console.log(`version 1.2.3`);

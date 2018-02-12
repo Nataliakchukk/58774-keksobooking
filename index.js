@@ -1,4 +1,4 @@
-const userCommand = require(`./src/userCommand`);
+const userCommand = require(`./src/user-command`);
 
 const args = process.argv.slice(2);
 

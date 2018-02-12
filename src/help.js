@@ -3,7 +3,7 @@ const description = require(`./description`);
 const author = require(`./author`);
 const license = require(`./license`);
 module.exports = {
-  name: `--help`,
+  name: `help`,
   description: ` — печатает этот текст;`,
   execute() {
     console.log(`Доступные команды: 

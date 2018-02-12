@@ -1,9 +1,7 @@
-const packageInfo = require(`../package.json`);
-
 module.exports = {
-  name: `--wrongCommand`,
+  name: `wrongCommand`,
   description: `Shows default text`,
-  execute() {
-    console.log(`Неизвестная команда ${packageInfo.name}. Чтобы прочитать правила использования приложения, наберите "--help"`);
+  execute(command) {
+    console.log(`Неизвестная команда ${command}. Чтобы прочитать правила использования приложения, наберите "--help"`);
   }
 };

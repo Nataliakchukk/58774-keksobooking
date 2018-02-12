@@ -6,8 +6,8 @@ if (args.length > 0) {
   if (userCommand[args[0]]) {
     userCommand[args[0]]();
   } else {
-    userCommand.defaultCommand(args[0]);
+    userCommand.wrongCommand(args[0]);
   }
 } else {
-  userCommand.empty();
+  userCommand.defaultCommand();
 }

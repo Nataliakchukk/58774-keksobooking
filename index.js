@@ -1,31 +1,31 @@
 const packageInfo = require(`./package.json`);
-const {execute: version} = require(`./src/version`);
-const {execute: help} = require(`./src/help`);
-const {execute: wrongCommand} = require(`./src/wrongCommand`);
-const {execute: description} = require(`./src/description`);
-const {execute: author} = require(`./src/author`);
-const {execute: license} = require(`./src/license`);
+const version = require(`./src/version`);
+const help = require(`./src/help`);
+const wrongCommand = require(`./src/wrongCommand`);
+const description = require(`./src/description`);
+const author = require(`./src/author`);
+const license = require(`./src/license`);
 
 const args = process.argv.slice(2);
 if (args.length > 0) {
   switch (args[0]) {
-    case `--help`:
-      help();
+    case `${help.name}`:
+      help.execute();
       break;
-    case `--license`:
-      license();
+    case `${license.name}`:
+      license.execute();
       break;
-    case `--description`:
-      description();
+    case `${description.name}`:
+      description.execute();
       break;
-    case `--author`:
-      author();
+    case `${author.name}`:
+      author.execute();
       break;
-    case `--version`:
-      version();
+    case `${version.name}`:
+      version.execute();
       break;
     default:
-      wrongCommand();
+      wrongCommand.execute();
       process.exit(1);
   }
 } else {

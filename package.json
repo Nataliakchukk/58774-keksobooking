@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "my project",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "colors": "1.1.2"
+  },
   "devDependencies": {
     "eslint": "4.17.0",
     "eslint-config-htmlacademy": "0.4.2"

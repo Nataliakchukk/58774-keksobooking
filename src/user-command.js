@@ -12,11 +12,9 @@ module.exports = {
   [`--${description.name}`]: () => description.execute(),
   [`--${author.name}`]: () => author.execute(),
   [`--${version.name}`]: () => version.execute(),
-  wrongCommand(arg) {
+  'defaultCommand': () => defaultCommand.execute(),
+  'wrongCommand': (arg) => {
     wrongCommand.execute(arg);
     process.exit(1);
   },
-  defaultCommand() {
-    defaultCommand.execute();
-  }
 };

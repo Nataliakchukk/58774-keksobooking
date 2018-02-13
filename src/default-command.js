@@ -5,6 +5,6 @@ module.exports = {
   name: `defaultCommand`,
   description: `Shows default text`,
   execute() {
-    console.log(`Привет ${colors.trap(packageInfo.author)}! Эта программа будет запускать сервер «${colors.rainbow(packageInfo.name)}».`);
+    console.log(`Привет ${colors.zebra(packageInfo.author)}! Эта программа будет запускать сервер «${colors.rainbow(packageInfo.name)}».`);
   }
 };

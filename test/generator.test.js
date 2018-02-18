@@ -1,5 +1,6 @@
 const generateCommand = require(`../src/generateEntity`);
 const {generateEntity} = require(`../src/generator/wizards-generator`);
+const data = require(`../src/data`);
 const fs = require(`fs`);
 const {promisify} = require(`util`);
 const access = promisify(fs.access);
@@ -24,65 +25,112 @@ describe(`Generate JSON command`, function () {
 });
 
 describe(`Generate arrey`, () => {
-  const data = generateEntity();
+  const generator = generateEntity();
   it(`should find author`, () => {
-    assert.ok(`author` in data);
-    assert.equal(typeof data.author, `object`);
+    assert.ok(`author` in generator);
+    assert.equal(typeof generator.author, `object`);
   });
+
   it(`should find avatar in author`, () => {
-    assert.ok(`avatar` in data.author);
-    assert.equal(typeof data.author.avatar, `string`);
+    assert.ok(`avatar` in generator.author);
+    const avatar = generator.author.avatar;
+    assert.equal(typeof avatar, `string`);
+    assert.equal(avatar.indexOf(`https://robohash.org/`), 0);
   });
+
   it(`should find offer`, () => {
-    assert.ok(`offer` in data);
-    assert.equal(typeof data.offer, `object`);
+    assert.ok(`offer` in generator);
+    assert.equal(typeof generator.offer, `object`);
   });
+
   it(`should find title in offer`, () => {
-    assert.ok(`title` in data.offer);
-    assert.equal(typeof data.offer.title, `string`);
+    assert.ok(`title` in generator.offer);
+    const title = generator.offer.title;
+    assert.equal(typeof title, `string`);
+    assert.equal(data.TITLE.indexOf(title) !== -1, true);
   });
+
   it(`should find address in offer`, () => {
-    assert.ok(`address` in data.offer);
-    assert.equal(typeof data.offer.address, `string`);
+    assert.ok(`address` in generator.offer);
+    const address = generator.offer.address;
+    assert.equal(typeof address, `string`);
+    const arrayAddress = address.split(`,`);
+    assert.equal(arrayAddress[1], generator.location.x);
+    assert.equal(arrayAddress[1], generator.location.y);
   });
+
   it(`should find price in offer`, () => {
-    assert.ok(`price` in data.offer);
-    assert.equal(typeof data.offer.price, `number`);
+    assert.ok(`price` in generator.offer);
+    const price = generator.offer.price;
+    assert.equal(typeof price, `number`);
+    assert.equal(+price > 1000 && +price < 1000000, true);
   });
+
   it(`should find type in offer`, () => {
-    assert.ok(`type` in data.offer);
-    assert.equal(typeof data.offer.type, `string`);
+    assert.ok(`type` in generator.offer);
+    const type = generator.offer.type;
+    assert.equal(typeof type, `string`);
+    assert.equal(data.TYPE.indexOf(type) !== -1, true);
   });
+
   it(`should find rooms in offer`, () => {
-    assert.ok(`rooms` in data.offer);
-    assert.equal(typeof data.offer.rooms, `number`);
+    assert.ok(`rooms` in generator.offer);
+    const rooms = generator.offer.rooms;
+    assert.equal(typeof rooms, `number`);
+    assert.equal(+rooms >= 1 && +rooms <= 5, true);
   });
+
   it(`should find guests in offer`, () => {
-    assert.ok(`guests` in data.offer);
-    assert.equal(typeof data.offer.guests, `number`);
+    assert.ok(`guests` in generator.offer);
+    assert.equal(typeof generator.offer.guests, `number`);
   });
+
   it(`should find checkin in offer`, () => {
-    assert.ok(`checkin` in data.offer);
-    assert.equal(typeof data.offer.checkin, `string`);
+    assert.ok(`checkin` in generator.offer);
+    const checkin = generator.offer.checkin;
+    assert.equal(typeof checkin, `string`);
+    assert.equal(data.TIME.indexOf(checkin) !== -1, true);
   });
+
   it(`should find checkout in offer`, () => {
-    assert.ok(`checkout` in data.offer);
-    assert.equal(typeof data.offer.checkout, `string`);
+    assert.ok(`checkout` in generator.offer);
+    const checkout = generator.offer.checkout;
+    assert.equal(typeof checkout, `string`);
+    assert.equal(data.TIME.indexOf(checkout) !== -1, true);
   });
+
   it(`should find features in offer`, () => {
-    assert.ok(`features` in data.offer);
-    assert.equal(typeof data.offer.features, `string`);
+    assert.ok(`features` in generator.offer);
+    const features = generator.offer.features;
+    assert.equal(typeof features, `object`);
+    for (let i = 0; i < features.length; i++) {
+      assert.ok(data.FEATURES.indexOf(features[i]) !== -1);
+      let array = features.splice(i, 1);
+      assert.ok(array.indexOf(features[i]) === -1);
+    }
   });
+
   it(`should find description in offer`, () => {
-    assert.ok(`description` in data.offer);
-    assert.equal(typeof data.offer.description, `string`);
+    assert.ok(`description` in generator.offer);
+    assert.equal(typeof generator.offer.description, `string`);
   });
+
   it(`should find photos in offer`, () => {
-    assert.ok(`photos` in data.offer);
-    assert.equal(typeof data.offer.photos, `object`);
+    assert.ok(`photos` in generator.offer);
+    const photo = generator.offer.photos;
+    assert.equal(typeof photo, `object`);
+    for (let i = 0; i < photo.length; i++) {
+      assert.ok(data.PHOTOS.indexOf(photo[i]) !== -1);
+    }
   });
-  it(`should find location in offer`, () => {
-    assert.ok(`location` in data.offer);
-    assert.equal(typeof data.offer.location, `object`);
+
+  it(`should find location`, () => {
+    assert.ok(`location` in generator);
+    const location = generator.location;
+    assert.equal(typeof location, `object`);
+    assert.equal(typeof location.x, `number`);
+    assert.equal(typeof location.y, `number`);
+    assert.equal(location.x >= 300 && location.x <= 900, true);
+    assert.equal(location.y >= 150 && location.y <= 500, true);
   });
 });

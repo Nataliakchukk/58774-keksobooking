@@ -1,10 +1,12 @@
 const colors = require(`colors/safe`);
 const packageInfo = require(`../package.json`);
+const generateEntity = require(`./generateEntity`);
 
 module.exports = {
   name: `defaultCommand`,
   description: `Shows default text`,
   execute() {
-    console.log(`Привет ${colors.zebra(packageInfo.author)}! Эта программа будет запускать сервер «${colors.rainbow(packageInfo.name)}».`);
+    generateEntity.execute();
+    console.log(`Привет ${colors.rainbow(packageInfo.author)}! Эта программа будет запускать сервер «${colors.rainbow(packageInfo.name)}».`);
   }
 };

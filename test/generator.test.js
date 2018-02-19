@@ -55,7 +55,7 @@ describe(`Generate arrey`, () => {
     const address = generator.offer.address;
     assert.equal(typeof address, `string`);
     const arrayAddress = address.split(`,`);
-    assert.equal(arrayAddress[1], generator.location.x);
+    assert.equal(arrayAddress[0], generator.location.x);
     assert.equal(arrayAddress[1], generator.location.y);
   });
 

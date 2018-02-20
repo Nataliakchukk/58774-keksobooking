@@ -4,7 +4,7 @@ const {generateEntity} = require(`../src/generator/wizards-generator`);
 const util = require(`util`);
 const writeFile = util.promisify(fs.writeFile);
 const readline = require(`readline`);
-const open = util.promisify(fs.open);
+const access = util.promisify(fs.access);
 
 
 const fileWriteOptions = {encoding: `utf-8`, mode: 0o644};
@@ -14,9 +14,7 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-const question = util.promisify(function (quest, callback) {
-  rl.question(quest, callback.bind(null, null));
-});
+const question = (quest) => new Promise((resolve) => rl.question(quest, resolve));
 
 const setData = util.promisify(function (count, filePath, callback) {
   let dataArrey = [];
@@ -31,35 +29,29 @@ const setData = util.promisify(function (count, filePath, callback) {
 });
 
 const setFilePath = (filePath, count) => {
-  open(filePath, `wx`)
-      .then(() => {
-        setData(count, filePath)
-            .then(() => {
-              console.log(`Файл записан`);
+  access(filePath, fs.constants.R_OK, (err) => {
+    if (err) {
+      setData(count, filePath)
+          .then(() => {
+            console.log(`Файл записан`);
+            rl.close();
+          });
+    } else {
+      question(`Файл уже есть, перезаписать? [yes/no]: `)
+          .then((rewriteFile) => {
+            if (rewriteFile !== `yes`) {
+              console.log(`Файл остался прежним`);
               rl.close();
-              process.exit(0);
-            });
-      })
-      .catch((pathError) => {
-        if (pathError) {
-          if (pathError.code === `EEXIST`) {
-            question(`Файл уже есть, перезаписать? [yes/no]: `)
-                .then((rewriteFile) => {
-                  if (rewriteFile !== `yes`) {
-                    console.log(`Файл остался прежним`);
+            } else {
+              setData(count, filePath)
+                  .then(() => {
+                    console.log(`Файл перезаписан`);
                     rl.close();
-                    process.exit(0);
-                  }
-                  setData(count, filePath)
-                      .then(() => {
-                        console.log(`Файл перезаписан`);
-                        rl.close();
-                        process.exit(0);
-                      });
-                });
-          }
-        }
-      });
+                  });
+            }
+          });
+    }
+  });
 };
 
 module.exports = {
@@ -69,10 +61,15 @@ module.exports = {
     console.log(`Привет ${packageInfo.author}! Эта программа будет запускать сервер «${packageInfo.name}».`);
     question(`Сколько объектов сформировать? `)
         .then((count) => {
-          question(`Укажите путь, где сохранить данные: `)
-              .then((filePath) => {
-                setFilePath(filePath, count);
-              });
+          if (parseInt(count, 10)) {
+            question(`Укажите путь, где сохранить данные: `)
+                .then((filePath) => {
+                  setFilePath(filePath, count);
+                });
+          } else {
+            console.log(`вы ввели не число`);
+            process.exit(1);
+          }
         });
   }
 };

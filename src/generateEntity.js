@@ -6,11 +6,13 @@ const readline = require('readline');
 
 const fileWriteOptions = {encoding: `utf-8`, mode: 0o644};
 
-
+const question = util.promisify((quest, callback) => {
+  rl.question(quest, callback.bind(null, null));
+})
 module.exports = {
   name: `generateEntity`,
   description: `Generates data for project`,
-  execute(filePath = `${process.cwd()}/wizards-data.json`) {
+  execute(number, path) {
     const setData = (number, path) => {
       let dataArrey = [];
       while (number > 0) {

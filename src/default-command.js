@@ -32,27 +32,28 @@ module.exports = {
 
     const setFilePath = (filePath, count) => {
       access(filePath, fs.constants.W_OK)
-          .then(question(`Файл уже есть, перезаписать? [yes/no]: `)
-              .then((rewriteFile) => {
-                if (rewriteFile !== `yes`) {
-                  console.log(`Файл остался прежним`);
+          .then(() => {
+            question(`Файл уже есть, перезаписать? [yes/no]: `)
+                .then((rewriteFile) => {
+                  if (rewriteFile !== `yes`) {
+                    console.log(`Файл остался прежним`);
+                    rl.close();
+                  } else {
+                    setData(count, filePath)
+                        .then(() => {
+                          console.log(`Файл перезаписан`);
+                          rl.close();
+                        });
+                  }
+                });
+          })
+          .catch(() => {
+            setData(count, filePath)
+                .then(() => {
+                  console.log(`Файл записан`);
                   rl.close();
-                } else {
-                  setData(count, filePath)
-                      .then(() => {
-                        console.log(`Файл перезаписан`);
-                        rl.close();
-                      });
-                }
-              })
-              .catch(() => {
-                setData(count, filePath)
-                    .then(() => {
-                      console.log(`Файл записан`);
-                      rl.close();
-                    });
-              })
-          );
+                });
+          });
     };
 
     const question = (quest) => new Promise((resolve) => rl.question(quest, resolve));

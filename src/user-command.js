@@ -16,5 +16,6 @@ module.exports = {
   'defaultCommand': () => defaultCommand.execute(),
   'wrongCommand': (arg) => {
     wrongCommand.execute(arg);
+    process.exit(1);
   },
 };

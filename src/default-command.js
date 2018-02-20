@@ -9,13 +9,6 @@ const access = util.promisify(fs.access);
 
 const fileWriteOptions = {encoding: `utf-8`, mode: 0o644};
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-const question = (quest) => new Promise((resolve) => rl.question(quest, resolve));
-
 const setData = util.promisify(function (count, filePath, callback) {
   let dataArrey = [];
   while (count > 0) {
@@ -28,36 +21,43 @@ const setData = util.promisify(function (count, filePath, callback) {
       });
 });
 
-const setFilePath = (filePath, count) => {
-  access(filePath, fs.constants.R_OK, (err) => {
-    if (err) {
-      setData(count, filePath)
-          .then(() => {
-            console.log(`Файл записан`);
-            rl.close();
-          });
-    } else {
-      question(`Файл уже есть, перезаписать? [yes/no]: `)
-          .then((rewriteFile) => {
-            if (rewriteFile !== `yes`) {
-              console.log(`Файл остался прежним`);
-              rl.close();
-            } else {
-              setData(count, filePath)
-                  .then(() => {
-                    console.log(`Файл перезаписан`);
-                    rl.close();
-                  });
-            }
-          });
-    }
-  });
-};
-
 module.exports = {
   name: `defaultCommand`,
   description: `Shows default text`,
   execute() {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    const setFilePath = (filePath, count) => {
+      access(filePath, fs.constants.W_OK)
+          .then (
+            question(`Файл уже есть, перезаписать? [yes/no]: `)
+                .then((rewriteFile) => {
+                  if (rewriteFile !== `yes`) {
+                    console.log(`Файл остался прежним`);
+                    rl.close();
+                  } else {
+                    setData(count, filePath)
+                        .then(() => {
+                          console.log(`Файл перезаписан`);
+                          rl.close();
+                        });
+                  }
+                })
+                .catch (() => {
+                  setData(count, filePath)
+                        .then(() => {
+                          console.log(`Файл записан`);
+                          rl.close();
+                        })
+                })
+          );
+    };
+
+    const question = (quest) => new Promise((resolve) => rl.question(quest, resolve));
+
     console.log(`Привет ${packageInfo.author}! Эта программа будет запускать сервер «${packageInfo.name}».`);
     question(`Сколько объектов сформировать? `)
         .then((count) => {

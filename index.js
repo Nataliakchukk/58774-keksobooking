@@ -8,7 +8,6 @@ if (args.length > 0) {
   } else {
     userCommand.wrongCommand(args[0]);
   }
-  process.exit(1);
 } else {
   userCommand.defaultCommand();
 }

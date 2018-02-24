@@ -32,6 +32,7 @@ const fileType = {
   'html': `text/html; charset=UTF-8`,
   'jpg': `image/jpeg`,
   'png': `image/png`,
+  'gif': `image/gif`,
   'ico': `image/x-icon`
 };
 
@@ -96,7 +97,7 @@ module.exports = {
     let port = `3000`;
     const question = (quest) => new Promise((resolve) => rl.question(quest, resolve));
 
-    question(`Введите номер порта, число больше 1024 (по умолчани: 3000): `)
+    question(`Введите номер порта, число больше 1024 (по умолчанию: 3000): `)
         .then((count) => {
           if (parseInt(count, 10) && count > 1024) {
             port = count;

@@ -90,7 +90,7 @@ module.exports = {
   name: `server`,
   descriotion: `run server`,
   execute(args) {
-    const port = !isNaN(args[0]) && parseInt(args[0], 10) || PORT;
+    const port = args[0] && !isNaN(args[0]) && parseInt(args[0], 10) || PORT;
     serverRun(port);
   },
 };

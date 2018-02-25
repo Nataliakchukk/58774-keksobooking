@@ -12,7 +12,7 @@ const PORT = `3000`;
 const HOSTNAME = `127.0.0.1`;
 
 
-const printDirectory = (files) => {
+const printDirectory = (filePath, files) => {
   return `<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -41,13 +41,12 @@ const readFile = async (filePath, res) => {
   const pathEnd = path.extname(filePath).replace(`.`, ``);
   const setContentType = FILETYPE[pathEnd] || `text/plain`;
   res.setHeader(`content-type`, setContentType);
-  res.setHeader(`content-lenght`, Buffer.byteLength(data));
+  res.setHeader(`content-length`, Buffer.byteLength(data));
   res.end(data);
 };
 
 const readDir = async (filePath, res) => {
   const files = await readdir(filePath);
-  console.log(`pathEndFile`, filePath);
   res.setHeader(`content-type`, `text/html`);
   const content = printDirectory(filePath, files);
   res.setHeader(`content-length`, Buffer.byteLength(content));
@@ -65,7 +64,12 @@ const serverRun = (port) => {
         res.statusMessage = `OK`;
 
         if (pathStat.isDirectory()) {
-          await readDir(absolutePath, res);
+          const indexPath = absolutePath + `index.html`;
+          try {
+            await readFile(indexPath, res);
+          } catch (e) {
+            await readDir(absolutePath, res);
+          }
         } else {
           await readFile(absolutePath, res);
         }

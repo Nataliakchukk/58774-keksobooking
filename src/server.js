@@ -3,12 +3,12 @@ const url = require(`url`);
 const path = require(`path`);
 const fs = require(`fs`);
 const {promisify} = require(`util`);
-const readline = require(`readline`);
 
 const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
 const readfile = promisify(fs.readFile);
 
+const PORT = `3000`;
 const HOSTNAME = `127.0.0.1`;
 
 
@@ -27,7 +27,7 @@ const printDirectory = (files) => {
       </body>
     </html>`;
 };
-const fileType = {
+const FILETYPE = {
   'css': `text/css`,
   'html': `text/html; charset=UTF-8`,
   'jpg': `image/jpeg`,
@@ -39,7 +39,8 @@ const fileType = {
 const readFile = async (filePath, res) => {
   const data = await readfile(filePath);
   const pathEnd = path.extname(filePath).replace(`.`, ``);
-  res.setHeader(`content-type`, fileType[pathEnd]);
+  const setContentType = FILETYPE[pathEnd] || `text/plain`;
+  res.setHeader(`content-type`, setContentType);
   res.setHeader(`content-lenght`, Buffer.byteLength(data));
   res.end(data);
 };
@@ -88,23 +89,8 @@ const serverRun = (port) => {
 module.exports = {
   name: `server`,
   descriotion: `run server`,
-  execute() {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-
-    let port = `3000`;
-    const question = (quest) => new Promise((resolve) => rl.question(quest, resolve));
-
-    question(`Введите номер порта, число больше 1024 (по умолчанию: 3000): `)
-        .then((count) => {
-          if (parseInt(count, 10) && count > 1024) {
-            port = count;
-          }
-        })
-        .then(() => {
-          serverRun(port);
-        });
+  execute(args) {
+    const port = !isNaN(args[0]) && parseInt(args[0], 10) || PORT;
+    serverRun(port);
   },
 };

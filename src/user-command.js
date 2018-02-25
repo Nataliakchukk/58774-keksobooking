@@ -13,7 +13,7 @@ module.exports = {
   [`--${description.name}`]: () => description.execute(),
   [`--${author.name}`]: () => author.execute(),
   [`--${version.name}`]: () => version.execute(),
-  [`--${server.name}`]: () => server.execute(),
+  [`--${server.name}`]: (arg) => server.execute(arg),
   [`--data`]: () => () => defaultCommand.execute(),
   'defaultCommand': () => defaultCommand.execute(),
   'wrongCommand': (arg) => {

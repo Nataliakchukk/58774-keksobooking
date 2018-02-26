@@ -13,23 +13,21 @@ const offers = generateEntity();
 
 app.get(`/api/offers`, (req, res) => res.send(offers));
 
-// app.get(`/api/offers:date`, (req, res) => {
-//   const date = req.params[`date`].toLowerCase();
-//   const offer = offers && offers.find((it) => it.date.toLowerCase() === date);
-//   if (!offer) {
-//     res.status(404).end();
-//   } else {
-//     res.send(offer);
-//   }
-// });
-
-app.post(`/api/offers`, upload.single(`avatar`), (req, res) => {
-  res.send(req.body);
+app.get(`/api/offers/:date`, (req, res) => {
+  const date = req.params[`date`].toLowerCase();
+  const offer = offers && offers.find((it) => it.date.toLowerCase() === date);
+  if (!offer) {
+    res.status(404).end();
+  } else {
+    res.send(offer);
+  }
 });
 
-// app.post(`/api/offers`, upload.array(`photos`, 3), (req, res) => {
-//   res.send(req.body);
-// });
+const appUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: `photos`, maxCount: 3}]);
+
+app.post(`/api/offers`, appUpload, (req, res) => {
+  res.send(req.body);
+});
 
 const HOSTNAME = `127.0.0.1`;
 const PORT = `3000`;

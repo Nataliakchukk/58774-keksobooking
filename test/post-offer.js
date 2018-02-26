@@ -71,19 +71,18 @@ describe(`POST /api/offers`, function () {
         field(`price`, 545130).
         field(`rooms`, 3).
         field(`type`, `flat`).
-        // attach(`avatar`, `test/fixtures/test.jpg`).
-        // attach(`photos`, `test/fixtures/test.jpg`).
+        attach(`avatar`, `test/fixtures/test.jpg`).
         expect(200, {
           title: `Маленький ужасный дворец`,
           address: `565.0488536141017, 335.1362499791128`,
-          // checkin: `12:00`,
-          // checkout: `14:00`,
-          // description: ``,
-          // features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
-          // guests: `3`,
-          // price: `545130`,
-          // rooms: `3`,
-          // type: `flat`,
+          checkin: `12:00`,
+          checkout: `14:00`,
+          description: ``,
+          features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
+          guests: `3`,
+          price: `545130`,
+          rooms: `3`,
+          type: `flat`,
         });
   });
 });

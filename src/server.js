@@ -1,100 +1,48 @@
-const http = require(`http`);
-const url = require(`url`);
-const path = require(`path`);
-const fs = require(`fs`);
-const {promisify} = require(`util`);
+const express = require(`express`);
+const multer = require(`multer`);
+const bodyParser = require(`body-parser`);
+const {generateEntity} = require(`./generator/wizards-generator`);
 
-const stat = promisify(fs.stat);
-const readdir = promisify(fs.readdir);
-const readfile = promisify(fs.readFile);
+const app = express();
+app.use(express.static(`static`));
+app.use(bodyParser.json());
 
-const PORT = `3000`;
+const upload = multer({storage: multer.memoryStorage()});
+
+const offers = generateEntity();
+
+app.get(`/api/offers`, (req, res) => res.send(offers));
+
+// app.get(`/api/offers:date`, (req, res) => {
+//   const date = req.params[`date`].toLowerCase();
+//   const offer = offers && offers.find((it) => it.date.toLowerCase() === date);
+//   if (!offer) {
+//     res.status(404).end();
+//   } else {
+//     res.send(offer);
+//   }
+// });
+
+app.post(`/api/offers`, upload.single(`avatar`), (req, res) => {
+  res.send(req.body);
+});
+
+// app.post(`/api/offers`, upload.array(`photos`, 3), (req, res) => {
+//   res.send(req.body);
+// });
+
 const HOSTNAME = `127.0.0.1`;
-
-
-const printDirectory = (filePath, files) => {
-  return `<!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <title>Directoty content</title>
-      </head>
-      <body>
-      <div>Все работает?</div>
-      <ul>
-        ${files.map((it) => `<li><a href="${it}">${it}</a></li>`).join(``)}
-      </ul>
-      </body>
-    </html>`;
-};
-const FILETYPE = {
-  'css': `text/css`,
-  'html': `text/html; charset=UTF-8`,
-  'jpg': `image/jpeg`,
-  'png': `image/png`,
-  'gif': `image/gif`,
-  'ico': `image/x-icon`
-};
-
-const readFile = async (filePath, res) => {
-  const data = await readfile(filePath);
-  const pathEnd = path.extname(filePath).replace(`.`, ``);
-  const setContentType = FILETYPE[pathEnd] || `text/plain`;
-  res.setHeader(`content-type`, setContentType);
-  res.setHeader(`content-length`, Buffer.byteLength(data));
-  res.end(data);
-};
-
-const readDir = async (filePath, res) => {
-  const files = await readdir(filePath);
-  res.setHeader(`content-type`, `text/html`);
-  const content = printDirectory(filePath, files);
-  res.setHeader(`content-length`, Buffer.byteLength(content));
-  res.end(content);
-};
-
-const serverRun = (port) => {
-  const server = http.createServer((req, res) => {
-    const absolutePath = path.resolve(__dirname, `../static`) + url.parse(req.url).pathname;
-    (async () => {
-      try {
-        const pathStat = await stat(absolutePath);
-
-        res.statusCode = 200;
-        res.statusMessage = `OK`;
-
-        if (pathStat.isDirectory()) {
-          const indexPath = absolutePath + `index.html`;
-          try {
-            await readFile(indexPath, res);
-          } catch (e) {
-            await readDir(absolutePath, res);
-          }
-        } else {
-          await readFile(absolutePath, res);
-        }
-      } catch (e) {
-        res.writeHead(404, `Not Found`);
-        res.end();
-      }
-    })().catch((e) => {
-      res.writeHead(500, e.message, {
-        [`content-type`]: `text/plain`
-      });
-      res.end(e.message);
-    });
-  });
-
-  server.listen(port, HOSTNAME, ()=> {
-    console.log(`server running at http://${HOSTNAME}:${port}/`);
-  });
-};
+const PORT = `3000`;
 
 module.exports = {
   name: `server`,
   description: `run server [PORT]`,
   execute(args) {
     const port = args[0] && !isNaN(args[0]) && parseInt(args[0], 10) || PORT;
-    serverRun(port);
+    const serverAddress = `http://${HOSTNAME}:${port}/`;
+    app.listen(port, HOSTNAME, () => {
+      console.log(`server running at ${serverAddress}`);
+    });
   },
+  app,
 };

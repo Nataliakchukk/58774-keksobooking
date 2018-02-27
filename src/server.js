@@ -9,13 +9,28 @@ app.use(bodyParser.json());
 
 const upload = multer({storage: multer.memoryStorage()});
 
-const offers = generateEntity();
+const offers = function (skip = 0, limitCount = 10, callback) {
+  let dataArray = [];
+  let skipDataArray = [];
+  while (limitCount > 0) {
+    dataArray.push(generateEntity());
+    limitCount--;
+  }
+  const skipCount = skip < dataArray.length ? skip : 0;
+  for(let i = skipCount; i < dataArray.length; i++ ) {
+    skipDataArray.push( dataArray[i]);
+  }
+  return skipDataArray || dataArray;
+};
 
-app.get(`/api/offers`, (req, res) => res.send(offers));
+app.get(`/api/offers`, (req, res) => {
+  res.send(offers(req.query.skip,req.query.limit ));
+});
 
 app.get(`/api/offers/:date`, (req, res) => {
   const date = req.params[`date`].toLowerCase();
-  const offer = offers && offers.find((it) => it.date.toLowerCase() === date);
+  const offersData = offers();
+  const offer = offers && offersData.find((it) => it.date.toLowerCase() === date);
   if (!offer) {
     res.status(404).end();
   } else {
@@ -29,7 +44,7 @@ app.post(`/api/offers`, appUpload, (req, res) => {
   res.send(req.body);
 });
 
-const HOSTNAME = `127.0.0.1`;
+const HOSTNAME = `localhost`;
 const PORT = `3000`;
 
 module.exports = {

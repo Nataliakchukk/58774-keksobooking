@@ -9,28 +9,32 @@ app.use(bodyParser.json());
 
 const upload = multer({storage: multer.memoryStorage()});
 
-const offers = function (skip = 0, limitCount = 20, callback) {
+const data = (count) => {
   let dataArray = [];
-  let skipDataArray = [];
-  while (limitCount > 0) {
+  while (count > 0) {
     dataArray.push(generateEntity());
-    limitCount--;
+    count--;
   }
-  const skipCount = skip < dataArray.length ? skip : 0;
-  for(let i = skipCount; i < dataArray.length; i++ ) {
-    skipDataArray.push( dataArray[i]);
-  }
-  return skipDataArray || dataArray;
+  return dataArray;
+};
+
+const toOffers = function (skip = 0, limit = 20) {
+  return {
+    data: data(+limit).slice(skip, skip + limit),
+    skip,
+    limit,
+    total: data(limit).length,
+  };
 };
 
 app.get(`/api/offers`, (req, res) => {
-  res.send(offers(req.query.skip,req.query.limit ));
+  res.send(toOffers(req.query.skip, req.query.limit));
 });
 
 app.get(`/api/offers/:date`, (req, res) => {
   const date = req.params[`date`].toLowerCase();
-  const offersData = offers();
-  const offer = offers && offersData.find((it) => it.date.toLowerCase() === date);
+  const offersData = toOffers();
+  const offer = toOffers && offersData.find((it) => it.date.toLowerCase() === date);
   if (!offer) {
     res.status(404).end();
   } else {

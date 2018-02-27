@@ -9,21 +9,14 @@ app.use(bodyParser.json());
 
 const upload = multer({storage: multer.memoryStorage()});
 
-const data = (count) => {
-  let dataArray = [];
-  while (count > 0) {
-    dataArray.push(generateEntity());
-    count--;
-  }
-  return dataArray;
-};
+const data = [...new Array(100)].map(()=>generateEntity());
 
 const toOffers = function (skip = 0, limit = 20) {
   return {
-    data: data(+limit).slice(skip, skip + limit),
+    data: data.slice(skip, skip + limit),
     skip,
     limit,
-    total: data(limit).length,
+    total: data.length
   };
 };
 

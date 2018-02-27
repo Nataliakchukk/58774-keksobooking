@@ -12,7 +12,7 @@ describe(`GET /api/offers`, function () {
         .expect(`Content-Type`, /json/)
         .then((response) => {
           const offers = response.body;
-          assert.equal(Object.keys(offers).length, 4);
+          assert.deepEqual(Object.keys(offers), [`data`, `skip`, `limit`, `total`]);
         });
   });
 

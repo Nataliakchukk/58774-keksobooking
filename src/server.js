@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 
 const upload = multer({storage: multer.memoryStorage()});
 
-const offers = function (skip = 0, limitCount = 10, callback) {
+const offers = function (skip = 0, limitCount = 20, callback) {
   let dataArray = [];
   let skipDataArray = [];
   while (limitCount > 0) {

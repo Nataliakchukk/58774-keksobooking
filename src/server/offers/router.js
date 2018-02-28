@@ -24,9 +24,9 @@ const toOffers = function (skip = 0, limit = 20) {
 };
 
 
-offersRouter.get(``, async (req, res) => res.send(await toOffers(req.query.skip, req.query.limit)));
+offersRouter.get(``, async(async (req, res) => res.send(await toOffers(req.query.skip, req.query.limit))));
 
-offersRouter.get(`/:date`, (req, res) => {
+offersRouter.get(`/:date`, async(async (req, res) => {
   const date = req.params[`date`].toLowerCase();
   const offersData = toOffers();
   const offer = toOffers && offersData.find((it) => it.date.toLowerCase() === date);
@@ -35,14 +35,25 @@ offersRouter.get(`/:date`, (req, res) => {
   } else {
     res.send(offer);
   }
-});
+}));
 
 const offersRouterUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: `photos`, maxCount: 3}]);
 
-offersRouter.post(``, offersRouterUpload, (req, res) => {
-  res.send(req.body);
+offersRouter.post(``, offersRouterUpload, async(req, res) => {
+  const dataReq = req.body;
+  const avatar = req.file;
+  if(avatar) {
+    data.avatar = avatar;
+  }
+  const errors = validateSchema(data, offersSchema);
+
+  if (errors.length > 0) {
+    throw new ValidationError(errors);
+  }
+
+  res.send(dataReq);
 });
-//
+
 offersRouter.use((exception, req, res, next) => {
   let data = exception;
   if (exception instanceof  ValidationError) {

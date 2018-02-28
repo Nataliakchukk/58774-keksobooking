@@ -32,6 +32,16 @@ module.exports = {
     `conditioner`
   ],
 
+  NAMES: [
+    `Keks`,
+    `Pavel`,
+    `Nikolay`,
+    `Alex`,
+    `Ulyana`,
+    `Anastasyia`,
+    `Julia`
+  ],
+
   PHOTOS: [
     `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
     `http://o0.github.io/assets/images/tokyo/hotel2.jpg`,

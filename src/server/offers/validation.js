@@ -9,7 +9,6 @@ const MAX_ADDRESS_LENGTH = 100;
 const MIN_ADDRESS_LENGTH = 1;
 const MAX_ROOMS_LENGTH = 1000;
 const MIN_ROOMS_LENGTH = 1;
-const TYPE = [`flat`, `house`, `bungalo`, `palace`];
 
 const requiredDataField = (set, isRequired) => {
   return {
@@ -27,7 +26,7 @@ const validateSchema = {
       return val.trim();
     },
     assertions: [
-      textRange(MAX_TITLE_LENGTH, MAX_TITLE_LENGTH)
+      textRange(MIN_TITLE_LENGTH, MAX_TITLE_LENGTH)
     ]
   },
 
@@ -41,7 +40,7 @@ const validateSchema = {
       return val.trim();
     },
     assertions: [
-      inRange(MAX_PRICE_LENGTH, MAX_PRICE_LENGTH)
+      inRange(MIN_PRICE_LENGTH, MAX_PRICE_LENGTH)
     ]
   },
   'rooms': {
@@ -50,7 +49,7 @@ const validateSchema = {
       return val.trim();
     },
     assertions: [
-      inRange(MAX_ROOMS_LENGTH, MAX_ROOMS_LENGTH)
+      inRange(MIN_ROOMS_LENGTH, MAX_ROOMS_LENGTH)
     ]
   },
   'address': {
@@ -59,7 +58,7 @@ const validateSchema = {
       return val.trim();
     },
     assertions: [
-      inRange(MAX_ADDRESS_LENGTH, MAX_ADDRESS_LENGTH)
+      inRange(MIN_ADDRESS_LENGTH, MAX_ADDRESS_LENGTH)
     ]
   },
   'avatar': {

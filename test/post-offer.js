@@ -56,7 +56,8 @@ describe(`POST /api/offers`, function () {
             rooms: 3,
             type: `flat`,
           }
-        });
+        }).
+        end((err, response)=>console.log(`aaaaaaaa`, response.body));
   });
 
   it(`should consume form data`, () => {

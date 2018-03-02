@@ -2,7 +2,7 @@ const {textRange, isImage, oneOf, anyOf, inRange} = require(`../util/assertion`)
 const data = require(`../../data`);
 
 const MAX_TITLE_LENGTH = 140;
-const MIN_TITLE_LENGTH = 30;
+const MIN_TITLE_LENGTH = 20;
 const MAX_PRICE_LENGTH = 1000000;
 const MIN_PRICE_LENGTH = 1;
 const MAX_ADDRESS_LENGTH = 100;
@@ -32,9 +32,6 @@ const validateSchema = {
 
   'price': {
     required: true,
-    converter(val) {
-      return val.trim();
-    },
     assertions: [
       inRange(MIN_PRICE_LENGTH, MAX_PRICE_LENGTH)
     ]
@@ -49,16 +46,36 @@ const validateSchema = {
 
   'type': {
     required: true,
+    converter(val) {
+      return val.trim();
+    },
     assertions: [
-      anyOf(data.TYPE)
+      oneOf(data.TYPE)
+    ]
+  },
+
+  'timein': {
+    required: true,
+    converter(val) {
+      return val.trim();
+    },
+    assertions: [
+      oneOf(data.TIME)
+    ]
+  },
+
+  'timeout': {
+    required: true,
+    converter(val) {
+      return val.trim();
+    },
+    assertions: [
+      oneOf(data.TIME)
     ]
   },
 
   'rooms': {
     required: true,
-    converter(val) {
-      return val.trim();
-    },
     assertions: [
       inRange(MIN_ROOMS_LENGTH, MAX_ROOMS_LENGTH)
     ]
@@ -81,8 +98,6 @@ const validateSchema = {
     ]
   },
   'name': requiredDataField(data.NAMES, false),
-  'timein': requiredDataField(data.TIME, true),
-  'timeout': requiredDataField(data.TIME, true),
 };
 
 module.exports = validateSchema;

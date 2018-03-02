@@ -27,6 +27,7 @@ module.exports = {
       message: `should be in range ${from}..${to}`
     };
   },
+
   textRange(from, to) {
     return {
       assert(text) {
@@ -35,6 +36,7 @@ module.exports = {
       message: `should be in range ${from}..${to}`
     };
   },
+
   isImage() {
     return {
       assert(image) {
@@ -43,6 +45,7 @@ module.exports = {
       message: `should be an image`
     };
   },
+
   unique() {
     return {
       assert(options) {

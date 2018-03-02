@@ -1,4 +1,4 @@
-const {textRange, isImage, oneOf, inRange} = require(`../util/assertion`);
+const {textRange, isImage, oneOf, anyOf, inRange} = require(`../util/assertion`);
 const data = require(`../../data`);
 
 const MAX_TITLE_LENGTH = 140;
@@ -30,10 +30,6 @@ const validateSchema = {
     ]
   },
 
-  'type': requiredDataField(data.TYPE, true),
-
-  'features': requiredDataField(data.FEATURES, false),
-
   'price': {
     required: true,
     converter(val) {
@@ -43,6 +39,21 @@ const validateSchema = {
       inRange(MIN_PRICE_LENGTH, MAX_PRICE_LENGTH)
     ]
   },
+
+  'features': {
+    required: true,
+    assertions: [
+      anyOf(data.FEATURES)
+    ]
+  },
+
+  'type': {
+    required: true,
+    assertions: [
+      anyOf(data.TYPE)
+    ]
+  },
+
   'rooms': {
     required: true,
     converter(val) {
@@ -52,15 +63,17 @@ const validateSchema = {
       inRange(MIN_ROOMS_LENGTH, MAX_ROOMS_LENGTH)
     ]
   },
+
   'address': {
     required: true,
     converter(val) {
       return val.trim();
     },
     assertions: [
-      inRange(MIN_ADDRESS_LENGTH, MAX_ADDRESS_LENGTH)
+      textRange(MIN_ADDRESS_LENGTH, MAX_ADDRESS_LENGTH)
     ]
   },
+
   'avatar': {
     required: false,
     assertions: [

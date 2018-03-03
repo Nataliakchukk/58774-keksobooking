@@ -54,7 +54,6 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
     dataPost.avatar = avatarInfo;
   }
 
-  console.log(dataPost);
   const errors = validateSchema(dataPost, offersSchema);
 
   if (errors.length > 0) {

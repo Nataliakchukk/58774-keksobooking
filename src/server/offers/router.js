@@ -60,8 +60,7 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
   if (errors.length > 0) {
     throw new ValidationError(errors);
   }
-  dataRenderer.renderDataSuccess(req, res, data);
-  res.send(dataPost);
+  dataRenderer.renderDataSuccess(req, res, dataPost);
 }));
 
 offersRouter.use((exception, req, res, next) => {

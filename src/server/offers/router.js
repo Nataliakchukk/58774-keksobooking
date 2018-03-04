@@ -7,8 +7,6 @@ const NotFoundError = require(`../errors/not-found-error`);
 const async = require(`../util/async`);
 const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
-// const {generateEntity} = require(`../../generator/wizards-generator`);
-// const offerStore = require(`./store`);
 
 const offersRouter = new Router();
 
@@ -16,7 +14,6 @@ offersRouter.use(bodyParser.json());
 
 const upload = multer({storage: multer.memoryStorage()});
 
-// const data = [...new Array(100)].map(()=>generateEntity());
 
 const toOffers = async (cursor, skip = 0, limit = 20) => {
   return {
@@ -26,7 +23,7 @@ const toOffers = async (cursor, skip = 0, limit = 20) => {
     total: await (cursor.count())
   };
 };
-// offersRouter.store = offerStore;
+
 
 offersRouter.get(``, async(async (req, res) => res.send(await toOffers(await offersRouter.offerStore.getAllOffers(), req.query.skip, req.query.limit))));
 
@@ -45,9 +42,12 @@ const offersRouterUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: 
 offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
   const dataPost = req.body;
   const avatar = req.file;
+
   if (avatar) {
     dataPost.avatar = avatar;
   }
+
+  const errors = validateSchema(dataPost, offersSchema);
 
   if (errors.length > 0) {
     throw new ValidationError(errors);
@@ -60,7 +60,6 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
     };
     dataPost.avatar = avatarInfo;
   }
-  const errors = validateSchema(dataPost, offersSchema);
 
   await offersRouter.offerStore.save(dataPost);
   dataRenderer.renderDataSuccess(req, res, dataPost);
@@ -78,6 +77,5 @@ offersRouter.use((exception, req, res, next) => {
 module.exports = (offerStore, imageStore) => {
   offersRouter.offerStore = offerStore;
   offersRouter.imageStore = imageStore;
-  console.log(`duhdjhfjhfkjhdjkfhdjhfkjdh`, offersRouter.offerStore);
   return offersRouter;
 };

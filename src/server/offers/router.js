@@ -7,6 +7,8 @@ const NotFoundError = require(`../errors/not-found-error`);
 const async = require(`../util/async`);
 const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
+const createStreamFromBuffer = require(`../util/buffer-to-stream`);
+
 
 const offersRouter = new Router();
 
@@ -27,22 +29,11 @@ const toOffers = async (cursor, skip = 0, limit = 20) => {
 
 offersRouter.get(``, async(async (req, res) => res.send(await toOffers(await offersRouter.offerStore.getAllOffers(), req.query.skip, req.query.limit))));
 
-offersRouter.get(`/:date`, async(async (req, res) => {
-  const offerDate = req.params.date;
-
-  const found = await offersRouter.offerStore.getOffer(offerDate);
-  if (!found) {
-    throw new NotFoundError(`Offer with name "${offerDate}" not found`);
-  }
-  res.send(found);
-}));
-
 const offersRouterUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: `photos`, maxCount: 3}]);
 
 offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
   const dataPost = req.body;
   const avatar = req.file;
-
   if (avatar) {
     dataPost.avatar = avatar;
   }
@@ -55,14 +46,53 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
 
   if (avatar) {
     const avatarInfo = {
-      path: `api/offers/${dataPost.username}/avatar`,
+      path: `api/offers/${dataPost.date}/avatar/`,
       mimetype: avatar.mimetype,
     };
+    await offersRouter.imageStore.save(avatarInfo.path, createStreamFromBuffer(avatar.buffer));
     dataPost.avatar = avatarInfo;
   }
 
   await offersRouter.offerStore.save(dataPost);
   dataRenderer.renderDataSuccess(req, res, dataPost);
+}));
+
+offersRouter.get(`/:date`, async(async (req, res) => {
+  const offerDate = req.params.date;
+
+  const found = await offersRouter.offerStore.getOffer(offerDate);
+  if (!found) {
+    throw new NotFoundError(`Offer with name "${offerDate}" not found`);
+  }
+  res.send(found);
+}));
+
+
+offersRouter.get(`/:date/avatar`, async(async (req, res) => {
+  const offerDate = req.params.date;
+
+  const offer = await offersRouter.offersStore.getOffer(offerDate);
+
+  if (!offer) {
+    throw new NotFoundError(`Offer with name "${offerDate}" not found`);
+  }
+
+  const avatar = offer.avatar;
+
+  if (!avatar) {
+    throw new NotFoundError(`Offer with name "${offerDate}" didn't upload avatar`);
+  }
+
+  const {info, stream} = await offersRouter.imageStore.get(avatar.path);
+
+  if (!info) {
+    throw new NotFoundError(`File was not found`);
+  }
+
+  res.set(`content-type`, avatar.mimetype);
+  res.set(`content-length`, info.length);
+  res.status(200);
+  stream.pipe(res);
 }));
 
 offersRouter.use((exception, req, res, next) => {

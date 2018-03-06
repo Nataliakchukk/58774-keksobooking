@@ -5,7 +5,7 @@ const setupCollection = async () => {
 
   const collection = dBase.collection(`offers`);
 
-  collection.createIndex({username: -1}, {unique: true});
+  collection.createIndex({date: -1}, {unique: true});
   return collection;
 };
 
@@ -14,8 +14,8 @@ class OfferStore {
     this.collection = collection;
   }
 
-  async getOffer(username) {
-    return (await this.collection).findOne({username});
+  async getOffer(offerData) {
+    return (await this.collection).findOne({offerData});
   }
 
   async getAllOffers() {

@@ -2,7 +2,6 @@ const createOffersRouter = require(`../src/server/offers/router`);
 const generate = require(`./offers-generator`);
 
 const offers = [...new Array(5)].map(() => generate.generateEntity());
-console.log(offers);
 
 class Cursor {
   constructor(data) {

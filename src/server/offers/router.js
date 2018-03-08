@@ -16,12 +16,11 @@ offersRouter.use(bodyParser.json());
 
 const upload = multer({storage: multer.memoryStorage()});
 
-
 const toOffers = async (cursor, skip = 0, limit = 20) => {
   return {
     data: await (cursor.skip(skip).limit(limit).toArray()),
-    skip,
-    limit,
+    skip: skip,
+    limit: limit,
     total: await (cursor.count())
   };
 };
@@ -33,9 +32,19 @@ const offersRouterUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: 
 
 offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
   const dataPost = req.body;
-  const avatar = req.file;
+  const avatar = req.files['avatar'][0];
+  const photos = req.files['photos'];
+
+  console.log(req.files);
+
+  dataPost.date = Date.now();
+
   if (avatar) {
     dataPost.avatar = avatar;
+  }
+
+  if (photos) {
+    dataPost.photos = photos;
   }
 
   const errors = validateSchema(dataPost, offersSchema);
@@ -50,7 +59,16 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
       mimetype: avatar.mimetype,
     };
     await offersRouter.imageStore.save(avatarInfo.path, createStreamFromBuffer(avatar.buffer));
+
     dataPost.avatar = avatarInfo;
+  }
+
+  if (photos) {
+    const photosInfo = {
+      path: `api/offers/${dataPost.date}/avatar/`,
+      mimetype: avatar.mimetype,
+    };
+
   }
 
   await offersRouter.offerStore.save(dataPost);
@@ -58,29 +76,29 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
 }));
 
 offersRouter.get(`/:date`, async(async (req, res) => {
-  const offerDate = req.params.date;
+  const offerDate = parseInt(req.params.date);
 
   const found = await offersRouter.offerStore.getOffer(offerDate);
   if (!found) {
-    throw new NotFoundError(`Offer with name "${offerDate}" not found`);
+    throw new NotFoundError(`Offer with date "${req.params.date}" not found`);
   }
   res.send(found);
 }));
 
 
 offersRouter.get(`/:date/avatar`, async(async (req, res) => {
-  const offerDate = req.params.date;
+  const offerDate = parseInt(req.params.date);
 
-  const offer = await offersRouter.offersStore.getOffer(offerDate);
+  const offer = await offersRouter.offerStore.getOffer(offerDate);
 
   if (!offer) {
-    throw new NotFoundError(`Offer with name "${offerDate}" not found`);
+    throw new NotFoundError(`Offer with avatar "${offerDate}" not found`);
   }
 
   const avatar = offer.avatar;
 
   if (!avatar) {
-    throw new NotFoundError(`Offer with name "${offerDate}" didn't upload avatar`);
+    throw new NotFoundError(`Offer with date "${offerDate}" didn't upload avatar`);
   }
 
   const {info, stream} = await offersRouter.imageStore.get(avatar.path);

@@ -14,8 +14,10 @@ class OfferStore {
     this.collection = collection;
   }
 
-  async getOffer(offerData) {
-    return (await this.collection).findOne({offerData});
+  async getOffer(offerDate) {
+    return (await this.collection).findOne({
+      date: offerDate
+    });
   }
 
   async getAllOffers() {

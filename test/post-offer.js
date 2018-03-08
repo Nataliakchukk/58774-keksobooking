@@ -4,6 +4,8 @@ const app = require(`express`)();
 
 app.use(`/api/offers`, mockOffersRouter);
 
+const testDate = Date.now();
+
 describe(`POST /api/offers`, function () {
 
   it(`should consume JSON`, () => {
@@ -19,6 +21,7 @@ describe(`POST /api/offers`, function () {
           timein: `12:00`,
           timeout: `14:00`,
           features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
+          date: testDate
         }).
         expect(200, {
           title: `Маленький ужасный дворец`,
@@ -30,7 +33,8 @@ describe(`POST /api/offers`, function () {
           guests: 3,
           price: 545130,
           rooms: 3,
-          type: `flat`
+          type: `flat`,
+          date: testDate
         });
   });
 
@@ -46,6 +50,7 @@ describe(`POST /api/offers`, function () {
         field(`price`, 545130).
         field(`rooms`, 3).
         field(`type`, `flat`).
+        field(`date`, testDate).
         expect(200, {
           title: `Маленький ужасный дворец`,
           address: `565.0488536141017, 335.1362499791128`,
@@ -56,7 +61,41 @@ describe(`POST /api/offers`, function () {
           guests: 3,
           price: 545130,
           rooms: 3,
-          type: `flat`
+          type: `flat`,
+          date: testDate,
+        });
+  });
+
+  it(`should consume form data + avatar`, () => {
+    return request(app).post(`/api/offers`).
+        field(`title`, `Маленький ужасный дворец`).
+        field(`address`, `565.0488536141017, 335.1362499791128`).
+        field(`timein`, `12:00`).
+        field(`timeout`, `14:00`).
+        field(`description`, ``).
+        field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
+        field(`guests`, `3`).
+        field(`price`, 545130).
+        field(`rooms`, 3).
+        field(`type`, `flat`).
+        field(`date`, testDate).
+        attach(`avatar`, `test/fixtures/test.jpg`).
+        expect(200, {
+          title: `Маленький ужасный дворец`,
+          address: `565.0488536141017, 335.1362499791128`,
+          timein: `12:00`,
+          timeout: `14:00`,
+          description: ``,
+          features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
+          guests: 3,
+          price: 545130,
+          rooms: 3,
+          type: `flat`,
+          date: testDate,
+          avatar: {
+            path: `api/offers/${testDate}/avatar/`,
+            mimetype: `image/jpeg`
+          }
         });
   });
 

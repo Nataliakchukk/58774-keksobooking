@@ -31,8 +31,10 @@ offersRouter.get(``, async(async (req, res) => res.send(await toOffers(await off
 const offersRouterUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: `photos`, maxCount: 3}]);
 
 offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
-  const dataPost = Object.assign({}, req.body);
-  dataPost.date = Date.now();
+  const dataPost = req.body;
+  if (!dataPost.date) {
+    dataPost.date = parseInt(new Date().getTime(), 10);
+  }
 
   const errors = validateSchema(dataPost, offersSchema);
 
@@ -51,8 +53,6 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
 
     dataPost.avatar = avatarInfo;
   }
-  console.log(req.body);
-  console.log(`dataPost`, dataPost);
 
   if (req.files && req.files[`photos`]) {
     const photos = req.files[`photos`];
@@ -68,7 +68,7 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
   }
 
   await offersRouter.offerStore.save(dataPost);
-  dataRenderer.renderDataSuccess(req, res, req.body);
+  dataRenderer.renderDataSuccess(req, res, dataPost);
 }));
 
 offersRouter.get(`/:date`, async(async (req, res) => {

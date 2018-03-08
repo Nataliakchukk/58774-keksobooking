@@ -11,7 +11,7 @@ class ImageStore {
     if (!this._bucket) {
       this._bucket = new mongodb.GridFSBucket(dBase, {
         chunkSizeBytes: 1024 * 1024,
-        bucketName: `avatars`
+        bucketName: `images`
       });
     }
     return this._bucket;

@@ -19,8 +19,8 @@ const upload = multer({storage: multer.memoryStorage()});
 const toOffers = async (cursor, skip = 0, limit = 20) => {
   return {
     data: await (cursor.skip(skip).limit(limit).toArray()),
-    skip: skip,
-    limit: limit,
+    skip,
+    limit,
     total: await (cursor.count())
   };
 };
@@ -32,20 +32,7 @@ const offersRouterUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: 
 
 offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
   const dataPost = req.body;
-  const avatar = req.files['avatar'][0];
-  const photos = req.files['photos'];
-
-  console.log(req.files);
-
   dataPost.date = Date.now();
-
-  if (avatar) {
-    dataPost.avatar = avatar;
-  }
-
-  if (photos) {
-    dataPost.photos = photos;
-  }
 
   const errors = validateSchema(dataPost, offersSchema);
 
@@ -53,7 +40,9 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
     throw new ValidationError(errors);
   }
 
-  if (avatar) {
+  if (req.files && req.files[`avatar`]) {
+    const avatar = req.files[`avatar`][0];
+
     const avatarInfo = {
       path: `api/offers/${dataPost.date}/avatar/`,
       mimetype: avatar.mimetype,
@@ -63,12 +52,17 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
     dataPost.avatar = avatarInfo;
   }
 
-  if (photos) {
-    const photosInfo = {
-      path: `api/offers/${dataPost.date}/avatar/`,
-      mimetype: avatar.mimetype,
-    };
+  if (req.files && req.files[`photos`]) {
+    const photos = req.files[`photos`];
+    let photosInfo = [];
 
+    photos.forEach(async (photo, i) => {
+      const photosPath = `api/offers/${dataPost.date}/photos/${i}`;
+      photosInfo.push(photosPath);
+      await offersRouter.imageStore.save(photosPath, createStreamFromBuffer(photo.buffer));
+    });
+
+    dataPost.photos = photosInfo;
   }
 
   await offersRouter.offerStore.save(dataPost);
@@ -76,7 +70,7 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
 }));
 
 offersRouter.get(`/:date`, async(async (req, res) => {
-  const offerDate = parseInt(req.params.date);
+  const offerDate = parseInt(req.params.date, 10);
 
   const found = await offersRouter.offerStore.getOffer(offerDate);
   if (!found) {
@@ -87,7 +81,7 @@ offersRouter.get(`/:date`, async(async (req, res) => {
 
 
 offersRouter.get(`/:date/avatar`, async(async (req, res) => {
-  const offerDate = parseInt(req.params.date);
+  const offerDate = parseInt(req.params.date, 10);
 
   const offer = await offersRouter.offerStore.getOffer(offerDate);
 

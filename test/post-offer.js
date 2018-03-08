@@ -1,5 +1,8 @@
 const request = require(`supertest`);
-const {app} = require(`../src/server`);
+const mockOffersRouter = require(`./mock-offers-router`);
+const app = require(`express`)();
+
+app.use(`/api/offers`, mockOffersRouter);
 
 describe(`POST /api/offers`, function () {
 
@@ -16,6 +19,7 @@ describe(`POST /api/offers`, function () {
           timein: `12:00`,
           timeout: `14:00`,
           features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
+          date: 1111
         }).
         expect(200, {
           title: `Маленький ужасный дворец`,
@@ -54,6 +58,37 @@ describe(`POST /api/offers`, function () {
           price: 545130,
           rooms: 3,
           type: `flat`
+        });
+  });
+
+  it(`should consume form data`, () => {
+    return request(app).post(`/api/offers`).
+        field(`title`, `Маленький ужасный дворец`).
+        field(`address`, `565.0488536141017, 335.1362499791128`).
+        field(`timein`, `12:00`).
+        field(`timeout`, `14:00`).
+        field(`description`, ``).
+        field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
+        field(`guests`, `3`).
+        field(`price`, 545130).
+        field(`rooms`, 3).
+        field(`type`, `flat`).
+        attach(`avatar`, `test/fixtures/test.jpg`).
+        expect(200, {
+          title: `Маленький ужасный дворец`,
+          address: `565.0488536141017, 335.1362499791128`,
+          timein: `12:00`,
+          timeout: `14:00`,
+          description: ``,
+          features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
+          guests: 3,
+          price: 545130,
+          rooms: 3,
+          type: `flat`,
+          avatar: {
+            path: `/api/wizards/date/avatar`,
+            mimetype: `image/png`
+          }
         });
   });
 

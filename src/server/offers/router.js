@@ -30,6 +30,41 @@ offersRouter.get(``, async(async (req, res) => res.send(await toOffers(await off
 
 const offersRouterUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: `photos`, maxCount: 3}]);
 
+const structurize = (data) => {
+  const offer = {
+    author: {
+      name: `Pavel`,
+    },
+    offer: {
+      title: data.title,
+      address: data.address,
+      description: data.description,
+      price: data.price,
+      type: data.type,
+      rooms: data.rooms,
+      guests: data.guests,
+      checkin: data.checkin,
+      checkout: data.checkout,
+      features: data.features,
+    },
+    location: {
+      x: 471,
+      y: 545,
+    },
+    date: data.date,
+  };
+
+  if (data.avatar) {
+    offer.author[`avatar`] = data.avatar.path;
+  }
+
+  if (data.photos) {
+    offer.offer[`photos`] = data.photos;
+  }
+
+  return offer;
+};
+
 offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
   const dataPost = req.body;
   if (!dataPost.date) {
@@ -66,8 +101,8 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
 
     dataPost.photos = photosInfo;
   }
-
-  await offersRouter.offerStore.save(dataPost);
+  const offer = structurize(dataPost);
+  await offersRouter.offerStore.save(offer);
   dataRenderer.renderDataSuccess(req, res, dataPost);
 }));
 

@@ -1,4 +1,4 @@
-const {generateEntity} = require(`../src/generator/wizards-generator`);
+const {generateEntity} = require(`./offers-generator`);
 const data = require(`../src/data`);
 const assert = require(`assert`);
 
@@ -63,18 +63,18 @@ describe(`Generate arrey`, () => {
     assert.equal(typeof generator.offer.guests, `number`);
   });
 
-  it(`should find timein in offer`, () => {
-    assert.ok(`timein` in generator.offer);
-    const timein = generator.offer.timein;
-    assert.equal(typeof timein, `string`);
-    assert.equal(data.TIME.indexOf(timein) !== -1, true);
+  it(`should find checkin in offer`, () => {
+    assert.ok(`checkin` in generator.offer);
+    const checkin = generator.offer.checkin;
+    assert.equal(typeof checkin, `string`);
+    assert.equal(data.TIME.indexOf(checkin) !== -1, true);
   });
 
-  it(`should find timeout in offer`, () => {
-    assert.ok(`timeout` in generator.offer);
-    const timeout = generator.offer.timeout;
-    assert.equal(typeof timeout, `string`);
-    assert.equal(data.TIME.indexOf(timeout) !== -1, true);
+  it(`should find checkout in offer`, () => {
+    assert.ok(`checkout` in generator.offer);
+    const checkout = generator.offer.checkout;
+    assert.equal(typeof checkout, `string`);
+    assert.equal(data.TIME.indexOf(checkout) !== -1, true);
   });
 
   it(`should find features in offer`, () => {

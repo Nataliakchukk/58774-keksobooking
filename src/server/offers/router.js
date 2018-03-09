@@ -8,11 +8,17 @@ const async = require(`../util/async`);
 const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
 const createStreamFromBuffer = require(`../util/buffer-to-stream`);
-
+const logger = require(`../../logger`);
 
 const offersRouter = new Router();
 
 offersRouter.use(bodyParser.json());
+
+offersRouter.use((req, res, next) => {
+  res.header(`Access-Control-Allow-Origin`, `*`);
+  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
+  next();
+});
 
 const upload = multer({storage: multer.memoryStorage()});
 
@@ -31,6 +37,10 @@ offersRouter.get(``, async(async (req, res) => res.send(await toOffers(await off
 const offersRouterUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: `photos`, maxCount: 3}]);
 
 const structurize = (data) => {
+  const setNumber = (dataAnswer) => {
+    return parseInt(dataAnswer, 10);
+  };
+  const address = data.address.split(`,`);
   const offer = {
     author: {
       name: `Pavel`,
@@ -39,23 +49,25 @@ const structurize = (data) => {
       title: data.title,
       address: data.address,
       description: data.description,
-      price: data.price,
+      price: setNumber(data.price),
       type: data.type,
-      rooms: data.rooms,
+      rooms: setNumber(data.rooms),
       guests: data.guests,
       checkin: data.checkin,
       checkout: data.checkout,
       features: data.features,
+      photos: data.photos || [],
     },
     location: {
-      x: 471,
-      y: 545,
+      x: `${address[0]}`,
+      y: `${address[1]}`,
     },
     date: data.date,
   };
 
   if (data.avatar) {
     offer.author[`avatar`] = data.avatar.path;
+    offer.author[`mimetype`] = data.avatar.mimetype;
   }
 
   if (data.photos) {
@@ -70,7 +82,7 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
   if (!dataPost.date) {
     dataPost.date = parseInt(new Date().getTime(), 10);
   }
-
+  logger.info(`Received data by date: `, dataPost);
   const errors = validateSchema(dataPost, offersSchema);
 
   if (errors.length > 0) {
@@ -81,7 +93,7 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
     const avatar = req.files[`avatar`][0];
 
     const avatarInfo = {
-      path: `api/offers/${dataPost.date}/avatar/`,
+      path: `api/offers/${dataPost.date}/avatar`,
       mimetype: avatar.mimetype,
     };
     await offersRouter.imageStore.save(avatarInfo.path, createStreamFromBuffer(avatar.buffer));
@@ -126,18 +138,17 @@ offersRouter.get(`/:date/avatar`, async(async (req, res) => {
     throw new NotFoundError(`Offer with avatar "${offerDate}" not found`);
   }
 
-  const avatar = offer.avatar;
+  const avatar = offer.author.avatar;
 
   if (!avatar) {
     throw new NotFoundError(`Offer with date "${offerDate}" didn't upload avatar`);
   }
 
-  const {info, stream} = await offersRouter.imageStore.get(avatar.path);
+  const {info, stream} = await offersRouter.imageStore.get(avatar);
 
   if (!info) {
     throw new NotFoundError(`File was not found`);
   }
-
   res.set(`content-type`, avatar.mimetype);
   res.set(`content-length`, info.length);
   res.status(200);

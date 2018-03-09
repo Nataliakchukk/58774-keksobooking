@@ -54,7 +54,7 @@ const validateSchema = {
     ]
   },
 
-  'timein': {
+  'checkin': {
     required: true,
     converter(val) {
       return val.trim();
@@ -64,7 +64,7 @@ const validateSchema = {
     ]
   },
 
-  'timeout': {
+  'checkout': {
     required: true,
     converter(val) {
       return val.trim();

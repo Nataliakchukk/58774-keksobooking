@@ -37,15 +37,6 @@ offersRouter.get(``, async(async (req, res) => res.send(await toOffers(await off
 const offersRouterUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: `photos`, maxCount: 3}]);
 
 const structurize = (data) => {
-  const setFeatures = (dataAnswer) => {
-    let result = [];
-    if (typeof (dataAnswer) === `string`) {
-      result = dataAnswer.split(``);
-    } else {
-      result = dataAnswer;
-    }
-    return result;
-  };
   const setNumber = (dataAnswer) => {
     return parseInt(dataAnswer, 10);
   };
@@ -64,7 +55,7 @@ const structurize = (data) => {
       guests: data.guests,
       checkin: data.checkin,
       checkout: data.checkout,
-      features: setFeatures(data.features),
+      features: data.features,
       photos: data.photos || [],
     },
     location: {

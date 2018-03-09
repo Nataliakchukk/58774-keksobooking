@@ -7,11 +7,11 @@ class ImageStore {
     if (this._bucket) {
       return this._bucket;
     }
-    const dBase = await db;
+    const dBase = await db.getDb();
     if (!this._bucket) {
       this._bucket = new mongodb.GridFSBucket(dBase, {
         chunkSizeBytes: 1024 * 1024,
-        bucketName: `images`
+        bucketName: `avatar`
       });
     }
     return this._bucket;

@@ -18,16 +18,16 @@ describe(`POST /api/offers`, function () {
           type: `flat`,
           rooms: 3,
           guests: 3,
-          timein: `12:00`,
-          timeout: `14:00`,
+          checkin: `12:00`,
+          checkout: `14:00`,
           features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
           date: testDate
         }).
         expect(200, {
           title: `Маленький ужасный дворец`,
           address: `565.0488536141017, 335.1362499791128`,
-          timein: `12:00`,
-          timeout: `14:00`,
+          checkin: `12:00`,
+          checkout: `14:00`,
           description: ``,
           features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
           guests: 3,
@@ -42,8 +42,8 @@ describe(`POST /api/offers`, function () {
     return request(app).post(`/api/offers`).
         field(`title`, `Маленький ужасный дворец`).
         field(`address`, `565.0488536141017, 335.1362499791128`).
-        field(`timein`, `12:00`).
-        field(`timeout`, `14:00`).
+        field(`checkin`, `12:00`).
+        field(`checkout`, `14:00`).
         field(`description`, ``).
         field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
@@ -54,8 +54,8 @@ describe(`POST /api/offers`, function () {
         expect(200, {
           title: `Маленький ужасный дворец`,
           address: `565.0488536141017, 335.1362499791128`,
-          timein: `12:00`,
-          timeout: `14:00`,
+          checkin: `12:00`,
+          checkout: `14:00`,
           description: ``,
           features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
           guests: 3,
@@ -70,8 +70,8 @@ describe(`POST /api/offers`, function () {
     return request(app).post(`/api/offers`).
         field(`title`, `Маленький ужасный дворец`).
         field(`address`, `565.0488536141017, 335.1362499791128`).
-        field(`timein`, `12:00`).
-        field(`timeout`, `14:00`).
+        field(`checkin`, `12:00`).
+        field(`checkout`, `14:00`).
         field(`description`, ``).
         field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
@@ -83,8 +83,8 @@ describe(`POST /api/offers`, function () {
         expect(200, {
           title: `Маленький ужасный дворец`,
           address: `565.0488536141017, 335.1362499791128`,
-          timein: `12:00`,
-          timeout: `14:00`,
+          checkin: `12:00`,
+          checkout: `14:00`,
           description: ``,
           features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
           guests: 3,
@@ -93,7 +93,7 @@ describe(`POST /api/offers`, function () {
           type: `flat`,
           date: testDate,
           avatar: {
-            path: `api/offers/${testDate}/avatar/`,
+            path: `api/offers/${testDate}/avatar`,
             mimetype: `image/jpeg`
           }
         });
@@ -103,8 +103,8 @@ describe(`POST /api/offers`, function () {
     return request(app).post(`/api/offers`).
         field(`title`, `U`).
         field(`address`, `565.0488536141017, 335.1362499791128`).
-        field(`timein`, `12:00`).
-        field(`timeout`, `14:00`).
+        field(`checkin`, `12:00`).
+        field(`checkout`, `14:00`).
         field(`description`, ``).
         field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
@@ -122,8 +122,8 @@ describe(`POST /api/offers`, function () {
     return request(app).post(`/api/offers`).
         field(`title`, `Маленький ужасный дворец`).
         field(`address`, `1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111`).
-        field(`timein`, `12:00`).
-        field(`timeout`, `14:00`).
+        field(`checkin`, `12:00`).
+        field(`checkout`, `14:00`).
         field(`description`, ``).
         field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
@@ -137,12 +137,12 @@ describe(`POST /api/offers`, function () {
           errorMessage: `should be in range 1..100`
         }]);
   });
-  it(`should fail if timein is invalid`, () => {
+  it(`should fail if checkin is invalid`, () => {
     return request(app).post(`/api/offers`).
         field(`title`, `Маленький ужасный дворец`).
         field(`address`, `99`).
-        field(`timein`, `0`).
-        field(`timeout`, `14:00`).
+        field(`checkin`, `0`).
+        field(`checkout`, `14:00`).
         field(`description`, ``).
         field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
@@ -151,18 +151,18 @@ describe(`POST /api/offers`, function () {
         field(`type`, `flat`).
         attach(`avatar`, `test/fixtures/test.jpg`).
         expect(400, [{
-          fieldName: `timein`,
+          fieldName: `checkin`,
           fieldValue: `0`,
           errorMessage: `should be one of [12:00,13:00,14:00]`
         }]);
   });
 
-  it(`should fail if timeout is invalid`, () => {
+  it(`should fail if checkout is invalid`, () => {
     return request(app).post(`/api/offers`).
         field(`title`, `Маленький ужасный дворец`).
         field(`address`, `99`).
-        field(`timein`, `14:00`).
-        field(`timeout`, `0`).
+        field(`checkin`, `14:00`).
+        field(`checkout`, `0`).
         field(`description`, ``).
         field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
@@ -171,7 +171,7 @@ describe(`POST /api/offers`, function () {
         field(`type`, `flat`).
         attach(`avatar`, `test/fixtures/test.jpg`).
         expect(400, [{
-          fieldName: `timeout`,
+          fieldName: `checkout`,
           fieldValue: `0`,
           errorMessage: `should be one of [12:00,13:00,14:00]`
         }]);
@@ -181,8 +181,8 @@ describe(`POST /api/offers`, function () {
     return request(app).post(`/api/offers`).
         field(`title`, `Маленький ужасный дворец`).
         field(`address`, `99`).
-        field(`timein`, `14:00`).
-        field(`timeout`, `14:00`).
+        field(`checkin`, `14:00`).
+        field(`checkout`, `14:00`).
         field(`description`, ``).
         field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).

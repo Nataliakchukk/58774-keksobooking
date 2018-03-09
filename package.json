@@ -5,8 +5,10 @@
   "main": "index.js",
   "dependencies": {
     "colors": "1.1.2",
+    "dotenv": "5.0.1",
     "express": "4.16.2",
-    "mongodb": "3.0.3"
+    "mongodb": "3.0.3",
+    "winston": "3.0.0-rc1"
   },
   "devDependencies": {
     "body-parser": "1.18.2",
@@ -19,7 +21,9 @@
   "scripts": {
     "test:lint": "eslint .",
     "test:mocha": "mocha",
-    "test": "npm run test:lint && npm run test:mocha"
+    "test": "npm run test:lint && npm run test:mocha",
+    "start": "node index.js --server 3000",
+    "build": "NODE_ENV=production node index.js --server 3000"
   },
   "repository": {
     "type": "git",

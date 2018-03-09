@@ -9,7 +9,7 @@ const access = util.promisify(fs.access);
 
 const fileWriteOptions = {encoding: `utf-8`, mode: 0o644};
 
-const setData = util.promisify(function (count, filePath, callback) {
+const setData = util.promisify((count, filePath, callback) => {
   let dataArrey = [];
   while (count > 0) {
     dataArrey.push(generateEntity());

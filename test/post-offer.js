@@ -6,7 +6,7 @@ app.use(`/api/offers`, mockOffersRouter);
 
 const testDate = Date.now();
 
-describe(`POST /api/offers`, function () {
+describe(`POST /api/offers`, () => {
 
   it(`should consume JSON`, () => {
     return request(app).post(`/api/offers`).

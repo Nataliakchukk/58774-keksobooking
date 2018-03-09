@@ -5,7 +5,7 @@ const app = require(`express`)();
 
 app.use(`/api/offers`, mockOffersRouter);
 
-describe(`GET /api/offers`, function () {
+describe(`GET /api/offers`, () => {
 
   it(`respond with json`, () => {
     return request(app)

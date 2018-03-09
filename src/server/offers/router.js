@@ -37,6 +37,19 @@ offersRouter.get(``, async(async (req, res) => res.send(await toOffers(await off
 const offersRouterUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: `photos`, maxCount: 3}]);
 
 const structurize = (data) => {
+  const setFeatures = (dataAnswer) => {
+    let result = [];
+    if (typeof (dataAnswer) === `string`) {
+      result = dataAnswer.split(``);
+    } else {
+      result = dataAnswer;
+    }
+    return result;
+  };
+  const setNumber = (dataAnswer) => {
+    return parseInt(dataAnswer, 10);
+  };
+  const address = data.address.split(`,`);
   const offer = {
     author: {
       name: `Pavel`,
@@ -45,24 +58,25 @@ const structurize = (data) => {
       title: data.title,
       address: data.address,
       description: data.description,
-      price: data.price,
+      price: setNumber(data.price),
       type: data.type,
-      rooms: data.rooms,
+      rooms: setNumber(data.rooms),
       guests: data.guests,
       checkin: data.checkin,
       checkout: data.checkout,
-      features: data.features,
+      features: setFeatures(data.features),
       photos: data.photos || [],
     },
     location: {
-      x: 471,
-      y: 545,
+      x: `${address[0]}`,
+      y: `${address[1]}`,
     },
     date: data.date,
   };
 
   if (data.avatar) {
     offer.author[`avatar`] = data.avatar.path;
+    offer.author[`mimetype`] = data.avatar.mimetype;
   }
 
   if (data.photos) {
@@ -144,7 +158,7 @@ offersRouter.get(`/:date/avatar`, async(async (req, res) => {
   if (!info) {
     throw new NotFoundError(`File was not found`);
   }
-  res.set(`content-type`, `image/jpeg`);
+  res.set(`content-type`, avatar.mimetype);
   res.set(`content-length`, info.length);
   res.status(200);
   stream.pipe(res);

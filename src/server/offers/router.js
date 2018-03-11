@@ -37,9 +37,6 @@ offersRouter.get(``, async(async (req, res) => res.send(await toOffers(await off
 const offersRouterUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: `photos`, maxCount: 3}]);
 
 const structurize = (data) => {
-  const setNumber = (dataAnswer) => {
-    return parseInt(dataAnswer, 10);
-  };
   const address = data.address.split(`,`);
   const offer = {
     author: {
@@ -49,18 +46,18 @@ const structurize = (data) => {
       title: data.title,
       address: data.address,
       description: data.description,
-      price: setNumber(data.price),
+      price: parseFloat(data.price),
       type: data.type,
-      rooms: setNumber(data.rooms),
-      guests: data.guests,
+      rooms: parseInt(data.rooms, 10),
+      guests: parseInt(data.guests, 10),
       checkin: data.checkin,
       checkout: data.checkout,
-      features: data.features,
+      features: data.features || [],
       photos: data.photos || [],
     },
     location: {
-      x: `${address[0]}`,
-      y: `${address[1]}`,
+      x: parseFloat(address[0], 10),
+      y: parseFloat(address[1], 10),
     },
     date: data.date,
   };
@@ -83,6 +80,10 @@ offersRouter.post(``, offersRouterUpload, async(async (req, res) => {
     dataPost.date = parseInt(new Date().getTime(), 10);
   }
   logger.info(`Received data by date: `, dataPost);
+
+  if (!Array.isArray(req.body.features)) {
+    req.body.features = [req.body.features];
+  }
   const errors = validateSchema(dataPost, offersSchema);
 
   if (errors.length > 0) {

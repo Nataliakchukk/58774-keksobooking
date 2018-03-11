@@ -1,4 +1,4 @@
-const data = require(`./data`);
+const data = require(`../src/data`);
 
 
 const getRandomFromArr = (arr) => arr[Math.floor(arr.length * Math.random())];

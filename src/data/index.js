@@ -26,7 +26,7 @@ module.exports = {
   FEATURES: [
     `wifi`,
     `dishwasher`,
-    `parkin`,
+    `parking`,
     `washer`,
     `elevator`,
     `conditioner`

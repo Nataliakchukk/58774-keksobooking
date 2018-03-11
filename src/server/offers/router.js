@@ -56,8 +56,8 @@ const structurize = (data) => {
       photos: data.photos || [],
     },
     location: {
-      x: parseFloat(address[0], 10),
-      y: parseFloat(address[1], 10),
+      x: parseFloat(address[0]),
+      y: parseFloat(address[1]),
     },
     date: data.date,
   };

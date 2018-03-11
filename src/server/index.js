@@ -18,7 +18,7 @@ module.exports = {
     const offerRouter = router(offerStore.getOfferStore(), imageStore);
     app.use(`/api/offers`, offerRouter);
 
-    const port = args[0] && !isNaN(args[0]) && parseInt(args[0], 10) || PORT;
+    const port = args && args[0] && !isNaN(args[0]) && parseInt(args[0], 10) || PORT;
     const serverAddress = `http://${HOSTNAME}:${port}/`;
     app.listen(port, HOSTNAME, () => {
       logger.info(`server running at ${serverAddress}`);

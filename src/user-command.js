@@ -1,7 +1,6 @@
 const version = require(`./version`);
 const help = require(`./help`);
 const wrongCommand = require(`./wrong-сommand`);
-const defaultCommand = require(`./default-command`);
 const description = require(`./description`);
 const author = require(`./author`);
 const license = require(`./license`);
@@ -14,8 +13,7 @@ module.exports = {
   [`--${author.name}`]: () => author.execute(),
   [`--${version.name}`]: () => version.execute(),
   [`--${server.name}`]: (arg) => server.execute(arg),
-  [`--data`]: () => () => defaultCommand.execute(),
-  'defaultCommand': () => defaultCommand.execute(),
+  'defaultCommand': (arg) => server.execute(arg),
   'wrongCommand': (arg) => {
     wrongCommand.execute(arg);
     process.exit(1);

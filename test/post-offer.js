@@ -11,7 +11,7 @@ describe(`POST /api/offers`, () => {
   it(`should consume JSON`, () => {
     return request(app).post(`/api/offers`).
         send({
-          title: `Маленький ужасный дворец`,
+          title: `Маленький ужасный грязный дворец`,
           address: `565.0488536141017, 335.1362499791128`,
           description: ``,
           price: 545130,
@@ -20,16 +20,16 @@ describe(`POST /api/offers`, () => {
           guests: 3,
           checkin: `12:00`,
           checkout: `14:00`,
-          features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
+          features: [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`],
           date: testDate
         }).
         expect(200, {
-          title: `Маленький ужасный дворец`,
+          title: `Маленький ужасный грязный дворец`,
           address: `565.0488536141017, 335.1362499791128`,
           checkin: `12:00`,
           checkout: `14:00`,
           description: ``,
-          features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
+          features: [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`],
           guests: 3,
           price: 545130,
           rooms: 3,
@@ -45,7 +45,7 @@ describe(`POST /api/offers`, () => {
         field(`checkin`, `12:00`).
         field(`checkout`, `14:00`).
         field(`description`, ``).
-        field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
+        field(`features`, [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
         field(`price`, 545130).
         field(`rooms`, 3).
@@ -57,7 +57,7 @@ describe(`POST /api/offers`, () => {
           checkin: `12:00`,
           checkout: `14:00`,
           description: ``,
-          features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
+          features: [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`],
           guests: 3,
           price: 545130,
           rooms: 3,
@@ -73,7 +73,7 @@ describe(`POST /api/offers`, () => {
         field(`checkin`, `12:00`).
         field(`checkout`, `14:00`).
         field(`description`, ``).
-        field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
+        field(`features`, [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
         field(`price`, 545130).
         field(`rooms`, 3).
@@ -86,7 +86,7 @@ describe(`POST /api/offers`, () => {
           checkin: `12:00`,
           checkout: `14:00`,
           description: ``,
-          features: [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`],
+          features: [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`],
           guests: 3,
           price: 545130,
           rooms: 3,
@@ -106,7 +106,7 @@ describe(`POST /api/offers`, () => {
         field(`checkin`, `12:00`).
         field(`checkout`, `14:00`).
         field(`description`, ``).
-        field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
+        field(`features`, [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
         field(`price`, 545130).
         field(`rooms`, 3).
@@ -125,7 +125,7 @@ describe(`POST /api/offers`, () => {
         field(`checkin`, `12:00`).
         field(`checkout`, `14:00`).
         field(`description`, ``).
-        field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
+        field(`features`, [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
         field(`price`, 545130).
         field(`rooms`, 3).
@@ -144,7 +144,7 @@ describe(`POST /api/offers`, () => {
         field(`checkin`, `0`).
         field(`checkout`, `14:00`).
         field(`description`, ``).
-        field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
+        field(`features`, [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
         field(`price`, 545130).
         field(`rooms`, 3).
@@ -164,7 +164,7 @@ describe(`POST /api/offers`, () => {
         field(`checkin`, `14:00`).
         field(`checkout`, `0`).
         field(`description`, ``).
-        field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
+        field(`features`, [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
         field(`price`, 545130).
         field(`rooms`, 3).
@@ -184,7 +184,7 @@ describe(`POST /api/offers`, () => {
         field(`checkin`, `14:00`).
         field(`checkout`, `14:00`).
         field(`description`, ``).
-        field(`features`, [`wifi`, `dishwasher`, `parkin`, `washer`, `elevator`, `conditioner`]).
+        field(`features`, [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`]).
         field(`guests`, `3`).
         field(`price`, 545130).
         field(`rooms`, -1).
